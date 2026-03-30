@@ -1,5 +1,6 @@
 import requests
 import random
+from bs4 import BeautifulSoup
 
 
 
@@ -17,8 +18,15 @@ class Episode:
         self.name = self.episode_info["name"]
         self.rating = self.episode_info["rating"]["average"]
         self.type = episode_info["type"]
-
-
+        self.image = episode_info["image"]["medium"]
+        self.summary = self.get_summary_text()
+    
+    # Remove HTML tags from episode summary 
+    def get_summary_text(self):
+        soup = BeautifulSoup(self.episode_info["summary"])
+        text = soup.get_text()
+        return text
+        
 
 class TvShow:
     """Creates instance of TV show you want to watch
@@ -32,7 +40,7 @@ class TvShow:
     def __init__(self, name):
         self.name = name
         self.json = self.get_json()
-        self.picture = self.json["image"]["original"]
+        self.picture = self.json["image"]["medium"]
         self.title_id = self.get_title_id()
         self.all_episodes = self.get_all_episodes()
         self.num_seasons = self.all_episodes[-1].season
@@ -42,6 +50,8 @@ class TvShow:
 # Add string for show name to the end of the api address to show json  
     def get_json(self):
         r = requests.get("https://api.tvmaze.com/singlesearch/shows?q=" + self.name)
+        if r.json() == None:
+            raise Exception("Could not find a show with that name")
         
         return r.json()
     
@@ -64,7 +74,19 @@ class TvShow:
         valid_episodes = [e for e in self.all_episodes if e.rating != None and e.season in seasons]
         if len(valid_episodes) == 0:
             return "Ur rating is too high fuck nigga, lower ur standards"
-        episode = random.choice(valid_episodes)
+        random_episode = random.choice(valid_episodes)
 
-        return f"{episode.season_and_number} {episode.name}"
         
+        return random_episode
+        
+
+
+# Function to return the name of the first result in a search
+def fuzzy_search_result(typo):
+    r = requests.get(f"https://api.tvmaze.com/search/shows?q= {typo}").json()
+    if r == None:
+            raise Exception("Could not find a show with that name")
+    
+    top_result_name = r[0]["show"]["name"]  
+    return top_result_name 
+    

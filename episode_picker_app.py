@@ -1,9 +1,10 @@
 import streamlit as st
 from episode_puller_v2 import TvShow
+from episode_puller_v2 import fuzzy_search_result
 
 
 st.title("Tv Show Randomizer")
-
+#st.popover("Help", type="tertiary")
 
 
 if "show" not in st.session_state:
@@ -14,17 +15,37 @@ if "show_name" not in st.session_state:
 
 
 # textbox for user to input show name
-show_name = st.text_input("Name of Tv Show")
+show_name = st.text_input("Name of Tv Show", help="Type name of show")
+
+
 
 
 # create instance of tv show using user input
-if show_name != "" and "show" not in st.session_state or st.session_state["show_name"] != show_name :
-    st.session_state["show"] = TvShow(show_name)
-    st.session_state["last_input"] = show_name
-        # number input for ratings you wanna watch
+if show_name != "" and st.session_state["show_name"] != show_name :
+    try:
+        st.session_state["show"] = TvShow(show_name)
+        st.session_state["show_name"] = show_name
+    except:
+        try:
+            st.write(f" Did you mean {fuzzy_search_result(show_name)}")
+            st.session_state["show"] = ""
+            st.session_state["show_name"] = show_name
+        except:
+            st.write("Couldn't find a show with that name")
+            st.session_state["show"] = ""
+            st.session_state["show_name"] = show_name
+      
 
-if isinstance(st.session_state["show"], TvShow):         
-    rating = st.number_input("Lowest rated episode you want to watch", min_value=0.0, max_value=10.0, value=None, format="%0.1f")
-    seasons = st.multiselect("Which seasons do you want to choose from", options=range(1, 1 + st.session_state["show"].num_seasons))
+
+
+if isinstance(st.session_state["show"], TvShow):
+    st.image(st.session_state["show"].picture)         
+    rating = st.number_input("Lowest rating", min_value=0.0, max_value=10.0, value="min",format="%0.1f", help="Type the lowest rated episode you'd watch", placeholder="") 
+    seasons = st.multiselect("Seasons", options=range(1, 1 + st.session_state["show"].num_seasons), help="Select seasons to choose from", placeholder="Choose seasons")
     if st.button("Generate episode!") == True:
-        st.write(st.session_state["show"].random_episode(rating, seasons))
+        episode = st.session_state["show"].random_episode(rating, seasons)
+        st.image(episode.image)        
+        st.write(f"{episode.season_and_number} {episode.name}")
+        st.write(episode.summary)
+
+
