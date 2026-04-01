@@ -18,12 +18,12 @@ class Episode:
         self.name = self.episode_info["name"] if self.check_nulls("name") else "Name not found"
         self.rating = self.episode_info["rating"]["average"] if self.check_nulls("rating", "average") else "No rating found"
         self.type = episode_info["type"] if self.check_nulls("type") else "No type found"
-        self.image = episode_info["image"]["medium"] if self.check_nulls("image") and self.check_nulls("image", "medium") else "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+        self.image = episode_info["image"]["medium"] if self.check_nulls("image") and self.check_nulls("image", "medium") else "https://placehold.co/210x295?text=No+Image"
         self.summary = self.get_summary_text() if self.check_nulls("summary") else ""
     
     # Remove HTML tags from episode summary 
     def get_summary_text(self):
-        soup = BeautifulSoup(self.episode_info["summary"])
+        soup = BeautifulSoup(self.episode_info["summary"], "html.parser")
         text = soup.get_text()
         return text
     
@@ -75,8 +75,9 @@ class TvShow:
         
 # Return random episode 
     def random_episode(self, rating=0, seasons=None):
-        if seasons is None:
+        if seasons == [] or None:
             seasons = [num for num in range(self.num_seasons)]
+
 
         # Create list of episodes that satisfy the user's requirements by filtering with a list comprehension
         valid_episodes = [e for e in self.all_episodes if e.rating != None and e.season in seasons]
