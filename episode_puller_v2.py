@@ -11,10 +11,12 @@ class Episode:
     :ivar rating: IMDb rating for episode
 
     """
-    def __init__(self, episode_info):
+    def __init__(self, episode_info, imdb_id):
         self.episode_info = episode_info
+        self.imdb_id = imdb_id
         self.season = self.episode_info["season"] if self.check_nulls("season") else "No season info"
-        self.season_and_number = f"S{self.episode_info["season"]}E{self.episode_info["number"]}"     
+        self.number = self.episode_info["number"] if self.check_nulls("number") else "No episode number"
+        self.season_and_number = f"S{self.season}E{self.number}"     
         self.name = self.episode_info["name"] if self.check_nulls("name") else "Name not found"
         self.rating = self.episode_info["rating"]["average"] if self.check_nulls("rating", "average") else "No rating found"
         self.type = episode_info["type"] if self.check_nulls("type") else "No type found"
@@ -48,6 +50,7 @@ class TvShow:
     def __init__(self, name):
         self.name = name
         self.json = self.get_json()
+        self.imdb_id = self.json["externals"]["imdb"] if self.json["externals"]["imdb"] != None else "No ID found"
         self.picture = self.json["image"]["medium"]
         self.title_id = self.get_title_id()
         self.all_episodes = self.get_all_episodes()
@@ -72,12 +75,12 @@ class TvShow:
     def get_all_episodes(self):
         episodes_json = requests.get(f"https://api.tvmaze.com/shows/{self.title_id}/episodes").json()
         
-        return [Episode(e) for e in episodes_json]
+        return [Episode(e, self.imdb_id) for e in episodes_json]
     
     # Get list of seasons by parsing through episode list for unique season values
     def get_season_list(self):
-        season_list = []
         season_list = {self.all_episodes[e].season for e in range(len(self.all_episodes))}
+        season_list = sorted(season_list)
         return season_list
     
         
