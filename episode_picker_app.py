@@ -34,7 +34,7 @@ if ["user_agent"] not in st.session_state:
 if st.session_state["episode_generated"] == False:
     # textbox for user to input show name
     show_name = st.text_input("Name of Tv Show", help="Type name of show", placeholder=st.session_state["show_name"])
-
+    st.write(st.context.headers.get("User-Agent"))
   
 
 
