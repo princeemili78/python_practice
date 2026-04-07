@@ -102,7 +102,7 @@ class TvShow:
 
 # Create list of episodes that satisfy seasons and rating requirements
     def valid_episodes(self, rating=0, seasons=None):
-        if seasons == [] or None:
+        if seasons == [] or seasons == None:
             seasons = self.season_list
         if rating == None:
             rating = 0
