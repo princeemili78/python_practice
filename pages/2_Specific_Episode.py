@@ -94,7 +94,7 @@ else:
             st.rerun()
     st.markdown(f"# {st.session_state["page_2_episode"].name}")
     st.markdown(f"{st.session_state["page_2_episode"].summary}")
-    st.components.v1.html(f'<iframe src="https://vidsrc-embed.ru/embed/tv/{st.session_state["page_2_episode"].imdb_id}/{st.session_state["page_2_episode"].season}-{st.session_state["page_2_episode"].number}" width="100%" height="520" allowfullscreen></iframe>', height=520)
+    st.components.v1.html(f'<iframe src="https://vidsrc-embed.su/embed/tv/{st.session_state["page_2_episode"].imdb_id}/{st.session_state["page_2_episode"].season}-{st.session_state["page_2_episode"].number}" width="100%" height="520" allowfullscreen></iframe>', height=520)
     col4, col5 = st.columns([.85, .15])
     with col5:
         if st.button("Next Episode") == True:
