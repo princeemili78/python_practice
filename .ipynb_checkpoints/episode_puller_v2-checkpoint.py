@@ -71,7 +71,6 @@ class TvShow:
         self.title_id = self.get_title_id()
         self.all_episodes = self.get_all_episodes()
         self.season_list = self.get_season_list()
-        self.season_episode_dict = self.episodes_by_season()
         
 
 
@@ -102,7 +101,7 @@ class TvShow:
     
 # Create dictionary with Season as key and list of episodes matching season as value
     def episodes_by_season(self):
-        seasons_dict = {season: [episode for episode in self.all_episodes if episode.season == season] for season in self.season_list}
+        seasons_dict = {season: [] for season in self.season_list}
         return seasons_dict
 # Create list of episodes that satisfy seasons and rating requirements
     def valid_episodes(self, rating=0, seasons=None):
