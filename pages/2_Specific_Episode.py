@@ -107,7 +107,7 @@ else:
         if "Mobile" in st.session_state["user_agent"]:
             st.components.v1.html(f'<iframe src="https://vidsrc.cc/v2/embed/tv/{st.session_state["page_2_episode"].imdb_id}/{st.session_state["page_2_episode"].season}/{st.session_state["page_2_episode"].number}" style="width: 100%; height: 220px;" frameborder="0" referrerpolicy="origin" allowfullscreen></iframe>', height=220)
         else:
-            st.components.v1.html(f'<iframe src="https://vidsrc.cc/v2/embed/tv/{st.session_state["page_2_episode"].imdb_id}/{st.session_state["page_2_episode"].season}/{st.session_state["page_2_episode"].number}" style="width: 100%; height: 520px;" frameborder="0" referrerpolicy="origin" allowfullscreen></iframe>', height=520)
+            st.components.v1.html(f'<iframe src="https://vidsrc.cc/v2/embed/tv/{st.session_state["page_2_episode"].imdb_id}/{st.session_state["page_2_episode"].season}/{st.session_state["page_2_episode"].number}" style="width: 100%; height: 520px;" frameborder="0" referrerpolicy="origin" sandbox="allow-scripts allow-same-origin allow-forms"  allowfullscreen ></iframe>', height=520)
             # Below is another possible link to use to embed in case this one breaks.
             #st.components.v1.html(f'<iframe src="https://www.2embed.cc/embedtv/{st.session_state["page_2_episode"].imdb_id}&s={st.session_state["page_2_episode"].season}&e={st.session_state["page_2_episode"].number}" width="100%" height="520" allowfullscreen></iframe>', height=520)
     col4, col5 = st.columns([.85, .15])
